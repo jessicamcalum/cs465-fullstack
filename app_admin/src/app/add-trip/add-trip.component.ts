@@ -34,7 +34,7 @@ export class AddTripComponent implements OnInit {
       description: ['', Validators.required],
     })
   }
-
+ /*
   public onSubmit() {
     this.submitted = true;
     if(this.addForm.valid){
@@ -47,6 +47,21 @@ export class AddTripComponent implements OnInit {
         error: (error:any) => {
           console.log('Error: ' + error);
         }});
+    }
+  }
+  */
+
+  public onSubmit() {
+    this.submitted = true;
+    if(this.addForm.valid){
+      this.tripService.addTrip(this.addForm.value)
+        .then((data:any) => {
+          console.log(data);
+          this.router.navigate(['']);
+        })
+        .catch((error: any) => {
+          console.error('Error: ', error);
+        });
     }
   }
   // get the form short name to access the form fields

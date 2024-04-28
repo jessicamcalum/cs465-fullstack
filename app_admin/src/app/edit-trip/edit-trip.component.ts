@@ -7,8 +7,6 @@ import { Trip } from '../models/trip';
 
 @Component({
   selector: 'app-edit-trip',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './edit-trip.component.html',
   styleUrl: './edit-trip.component.css'
 })
@@ -53,8 +51,7 @@ ngOnInit() : void{
     description: ['', Validators.required]
   })
   
-  this.tripDataService.getTrip(tripCode)
-    .subscribe({
+ /* this.tripDataService.getTrip(tripCode).subscribe({
       next: (value: any) => {
         this.trip = value;
         // Populate our record into the form
@@ -72,8 +69,28 @@ ngOnInit() : void{
           console.log('Error: ' + error);
         }
       })
-}
+} */
 
+this.tripDataService.getTrip(tripCode)
+  .then((value: Trip) => {
+    this.trip = value;
+    // Populate our record into the form
+    this.editForm.patchValue(value);
+    if(!value)
+    {
+    this.message = 'No Trip Retrieved!';
+    }
+    else{
+      this.message = 'Trip: ' + tripCode + ' retrieved';
+    }
+    console.log(this.message);
+    })
+    .catch((error: any) => {
+      console.error('Error: ' + error);
+    
+  });
+}
+/*
   public onSubmit()
   {
     this.submitted = true;
@@ -90,7 +107,24 @@ ngOnInit() : void{
         }
       })
     }
-  }
+  } 
+*/
+public onSubmit()
+{
+  this.submitted = true;
+  if(this.editForm.valid)
+  {
+    this.tripDataService.updateTrip(this.editForm.value)
+        .then((value: Trip) => {
+        console.log('Update successful: ', value);
+        this.router.navigate(['']);
+      })
+      .catch((error: any) => {
+        console.error('Error: ' + error);
+      
+      });
+  }
+  } 
 
 // get the form short name to access the form fields
 get f() { return this.editForm.controls; }

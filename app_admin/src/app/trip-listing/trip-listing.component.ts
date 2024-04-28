@@ -6,6 +6,7 @@ import { TripDataService} from '../services/trip-data.service'; // Imports the T
 import { Trip } from '../models/trip'; // Imports the Trip model
 
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-trip-listing',
@@ -25,9 +26,14 @@ export class TripListingComponent implements OnInit {
 
   constructor(
     private tripDataService: TripDataService,
-    private router: Router
+    private router: Router,
+    private authenticationService: AuthenticationService
     ) {
     console.log('trip-listing constructor');
+  }
+
+  public isLoggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
   }
 
   // addTrip() method that will support the new button
@@ -37,7 +43,7 @@ export class TripListingComponent implements OnInit {
   }
 
   // Method that will call the getTrips() method in TripDataService
-  
+  /*
   private getStuff(): void {
     this.tripDataService.getTrips()
       .subscribe({
@@ -57,7 +63,27 @@ export class TripListingComponent implements OnInit {
         }
       })
   }
+*/
 
+private getStuff(): void {
+  this.tripDataService.getTrips()
+    
+      .then((value: any) => {
+        this.trips = value;
+        if(value.length > 0)
+        {
+          this.message = 'There are ' + value.length + ' trips available.';
+        }
+        else{
+          this.message = 'There were no trips retrieved from the database';
+        }
+        console.log(this.message);
+      })
+      .catch((error:any) => {
+        console.error('Error: ', error);
+      
+    })
+}
   // ngOnInit method that will call the private method when the component is initialized
   ngOnInit(): void {
     console.log('ngOnInit');
